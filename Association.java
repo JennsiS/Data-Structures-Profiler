@@ -4,14 +4,14 @@ import java.util.*;
  * @param <K>
  * @param <V>
  * @Carne 18962,18731
- * @date 19/03/19
- * @name Palabras.java
+ * @date 16/04/19
+ * @name Association.java
  * <p>Clase que permite la asociacion de palabras por medio de HashMaps</p>
  * */
 
 public class Association<K,V> implements Map.Entry<K,V> {
 
-    private K key;
+    private K key; 
     private V value;
     private HashMap<K,V> association;
 
@@ -24,14 +24,14 @@ public class Association<K,V> implements Map.Entry<K,V> {
         this.key = key;
         this.value = value;
     }
-
+	
     /**
      *Constructor
      */
     public Association() {
-        association = new HashMap<K,V>();
+		association = new HashMap<K,V>();
     }
-
+    
     public V getValue(){
         return value;
     }
@@ -45,26 +45,26 @@ public class Association<K,V> implements Map.Entry<K,V> {
         value = val;
         return prevValue;
     }
-
+    
     /**
      *Metodo que permite ingresar la llave y el valor al map
      * @param key, de tipo generico. Se refiere a la llave en un map
      * @param value, de tipo generico.Se refiere al valor de la llave mencionada
      */
     public void put(K key, V value){
-        this.key = key;
-        this.value = value;
-        association.put(key,value);
-
-
-    }
-
+            this.key = key;
+            this.value = value;
+            association.put(key,value);
+            
+        
+	}
+	
     /**
      *Metodo que permite obtener la clave del map
      * @param key, de tipo objeto
      * @return devuelve lo que se encuentra en la key del map
      */
     public V get(Object key){
-        return association.get(key);
-    }
+		return association.get(key);
+	}
 }

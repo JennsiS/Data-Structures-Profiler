@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.StringTokenizer;
 
 public class Main {
 
@@ -27,41 +28,67 @@ public class Main {
                 String dicc= null;
                 String ingles= null;
                 String espa= null;
-                String nombre= "";
-                String temp="";
-                int cont=0;
+                String s2="";
                 //Se crea un nuevo arbol binario
-                //BinaryTree arbol= new BinaryTree();
+                SplayBST arbol= new SplayBST();
                 //Lectura de las palabras encontradas en el archivo diccionario
-                FileReader fileReader = new FileReader("C:\\Users\\bff_n_000\\Desktop\\diccionario.txt");
+                FileReader fileReader = new FileReader("C:\\Users\\bff_n_000\\Desktop\\diccionary.dic");
                 BufferedReader doc = new BufferedReader(fileReader);
-                while((dicc = doc.readLine()) != null) {
-                //Se crea una asociacion por cada par de palabras encontradas
+                StringBuilder separador = new StringBuilder();
                 Association asociacion= new Association();
-                //Se obtiene la palabra en ingles
-                ingles= dicc.substring(dicc.indexOf("(")+1, dicc.indexOf(","));
-                //Se obtiene la palabra en español
-                espa=dicc.substring(dicc.indexOf(",")+1, dicc.indexOf(")"));
-                //Se ingresa la palabra en ingles como key a la asociacion y la palabra en español como valor 
-                asociacion.put(ingles,espa);
-               // System.out.println(ingles);
-               // System.out.println(espa);
+                /*
+                while((dicc = doc.readLine()) != null) {
+                    //Se crea una asociacion por cada par de palabras encontradas
+                    
+                    //Se obtiene la palabra en ingles
+                    StringTokenizer st = new StringTokenizer (dicc);
+                    while (st.hasMoreTokens()){
+                          s2 = st.nextToken();
+                         numTokens= numTokens+1;
+                            if (numTokens==1){
+                                ingles=s2;
+                                System.out.println (ingles);
+                            } else if(numTokens==2){
+                                espa=s2;
+                                System.out.println (espa);
+                            }
+                           asociacion.put(ingles,espa);
+                           arbol.put(asociacion);
+                          
+                           }  
+              }
+     */
+                     while((dicc = doc.readLine())!= null){
+               separador.append(dicc);
+               separador.append(System.lineSeparator());
+               dicc += " ";
+                String valor = "";
+               for(int i=1;i<dicc.length();i++){
+                   String temp = dicc.substring((i-1),i);  //Para verificar cada caracter de la linea
+                   if(temp.equals("\t")){
+                       ingles = dicc.substring(0,i-1).toUpperCase(); //Se obtiene la palabra en ingles
+                       espa = dicc.substring(i,dicc.length()).toUpperCase();
+                       for(int j=1;j<espa.length();j++){
+                           String temp2 = espa.substring((j-1),j);
+                           if(temp2.equals(" ")||temp2.equals(";")){
+                               valor = espa.substring(0,j-1).toUpperCase();
+                               break;
+                           }else{
+                               valor = espa;
+                           }
+                           asociacion.put(ingles,espa);
+                           arbol.put(asociacion);
+                       }
+                       
+                             
+                   }
+               }
+                     
+}
                 
-                    if (cont==0){
-                     arbol.add(asociacion);
-                    }else{
-                      arbol.add(asociacion);
-                    }
-                
-                temp = temp + dicc + "\n";
-                cont++;
-                }
-                 doc.close();
-           //arbol.traverseInOrder(arbol.root);     
-             
-//--------------------------------------------------------------------------------------
-//Traduccion de un archivo en ingles 
-       File traduccion = new File("C:\\Users\\bff_n_000\\Desktop\\traduccion.text");
+              doc.close();
+         
+        File traduccion = new File("C:\\Users\\bff_n_000\\Desktop\\traduccion.text");
         String String1 = "";
         String String2 = "";
         String String3 = "";
@@ -83,9 +110,8 @@ public class Main {
         }catch (IOException e){
 
         }
-        
-         System.out.println("Palabras ordenadas in Order:");
-         arbol.traverseInOrder(arbol.root);
+     
+        System.out.println (arbol.size());
         String[] wordsToTranslate = getWords();
         
         if (wordsToTranslate.length == 0){
@@ -93,15 +119,16 @@ public class Main {
         }
         else {
             StringBuilder finalS = new StringBuilder();
+            
             for (String i : wordsToTranslate){
-                if (arbol.findInOrder(arbol.root,i).equals("not found")){
+                if (arbol.get(i).equals("not found")){
                     finalS.append("*");
                     finalS.append(i);
                     finalS.append("*");
                     finalS.append(" ");
 
                 }else {
-                    finalS.append(arbol.findInOrder(arbol.root, i));
+                    finalS.append(arbol.get(i));
                     finalS.append(" ");
                 }
             }
@@ -114,7 +141,7 @@ public class Main {
         }
             catch(FileNotFoundException ex) {
                 System.out.println("No es posible abrir" + "diccionario.txt" + "'");                
-            }
+            } 
         
          
     
@@ -146,3 +173,29 @@ public class Main {
 }   
   
     
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+         
+                
+    
+
+                

@@ -11,38 +11,23 @@
  * Israel,J. (2017). Splay Tree. Extraido de: https://algs4.cs.princeton.edu/33balanced/SplayBST.java.html
  * */
 
-public class SplayBST<Key extends Comparable<Key>, Value>  {
-
-    private Node root;   // root of the BST
+public class SplayBST {
+    public Node root;   // root of the BST
 
     // BST helper node data type
     private class Node {
-        private Key key;            // key
-        private Value value;        // associated data
+        private String key;            // key
+        private String value;        // associated data
         private Node left, right;   // left and right subtrees
 
-        public Node(Key key, Value value) {
+        public Node(String key, String value) {
             this.key   = key;
             this.value = value;
         }
     }
-
-    public boolean contains(Key key) {
-        return get(key) != null;
-    }
-
-    // return value associated with the given key
-    // if no such value, return null
-    public Value get(Key key) {
-        root = splay(root, key);
-        int cmp = key.compareTo(root.key);
-        if (cmp == 0) return root.value;
-        else          return null;
-    } 
-    
-    public static int stringCompare(String str1, String str2) 
+     public static int stringCompare(String str1, String str2) 
     {
-        int l1 = str1.length(); 
+        int l1 = str1.length();
         int l2 = str2.length(); 
         int lmin = Math.min(l1, l2); 
   
@@ -67,23 +52,43 @@ public class SplayBST<Key extends Comparable<Key>, Value>  {
         } 
     } 
 
+    public boolean contains(String key) {
+        return get(key) != null;
+    }
+
+    // return value associated with the given key
+    // if no such value, return null
+    
+    
+    public String get(String key) {
+        String not="not found";
+        root = splay(root, key);
+        int num= stringCompare(root.key, key);
+        if (num==0){
+            return root.value;
+        } else{
+            return  not;
+        }
+    } 
+   
+
    /***************************************************************************
     *  Splay tree insertion.
     ***************************************************************************/
-    public void put(Key key, Value value) {
+    public void put( Association <String,String> association) {
         // splay key to root
         if (root == null) {
-            root = new Node(key, value);
+            root = new Node(association.getKey(), association.getValue());
             return;
         }
         
-        root = splay(root, key);
-
-        int cmp = key.compareTo(root.key);
+        root = splay(root, association.getKey());
+        
+        int num=stringCompare(root.key, association.getKey());
         
         // Insert new node at root
-        if (cmp < 0) {
-            Node n = new Node(key, value);
+        if (num < 0) {
+            Node n = new Node(association.getKey(), association.getValue());
             n.left = root.left;
             n.right = root;
             root.left = null;
@@ -91,8 +96,8 @@ public class SplayBST<Key extends Comparable<Key>, Value>  {
         }
 
         // Insert new node at root
-        else if (cmp > 0) {
-            Node n = new Node(key, value);
+        else if (num > 0) {
+            Node n = new Node(association.getKey(), association.getValue());
             n.right = root.right;
             n.left = root;
             root.right = null;
@@ -101,20 +106,19 @@ public class SplayBST<Key extends Comparable<Key>, Value>  {
 
         // It was a duplicate key. Simply replace the value
         else {
-            root.value = value;
+            root.value = association.getValue();
         }
 
     }
     
  
-    public void remove(Key key) {
+    public void remove(String key) {
         if (root == null) return; // empty tree
         
         root = splay(root, key);
 
-        int cmp = key.compareTo(root.key);
-        
-        if (cmp == 0) {
+        int num=stringCompare(root.key, key);
+        if (num == 0) {
             if (root.left == null) {
                 root = root.right;
             } 
@@ -130,11 +134,10 @@ public class SplayBST<Key extends Comparable<Key>, Value>  {
     }
     
    
-    private Node splay(Node h, Key key) {
+    private Node splay(Node h, String key) {
         if (h == null) return null;
 
-        int cmp1 = key.compareTo(h.key);
-
+        int cmp1=stringCompare(h.key, key);
         if (cmp1 < 0) {
             // key not in tree, so we're done
             if (h.left == null) {
@@ -161,7 +164,7 @@ public class SplayBST<Key extends Comparable<Key>, Value>  {
                 return h;
             }
 
-            int cmp2 = key.compareTo(h.right.key);
+            int cmp2=stringCompare(h.right.key, key);
             if (cmp2 < 0) {
                 h.right.left  = splay(h.right.left, key);
                 if (h.right.left != null)
@@ -211,4 +214,8 @@ public class SplayBST<Key extends Comparable<Key>, Value>  {
         x.left = h;
         return x;
     }
+    
+    
+
+    
 }
