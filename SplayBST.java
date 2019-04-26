@@ -11,19 +11,17 @@
  * Israel,J. (2017). Splay Tree. Extraido de: https://algs4.cs.princeton.edu/33balanced/SplayBST.java.html
  * */
 
-public class SplayBST {
+public class SplayBST <Key extends Comparable<Key>,Value extends Comparable<Value>> {
     public Node root;   // root of the BST
 
     // BST helper node data type
     private class Node {
-        private String key;            // key
-        private String value;        // associated data
+        private Association<Key,Value> asociacion;
         private Node left, right;   // left and right subtrees
 
-        public Node(String key, String value) {
-            this.key   = key;
-            this.value = value;
-        }
+        public Node(Key key, Value value) {
+            asociacion = new Association(key,value);
+}
     }
      public static int stringCompare(String str1, String str2) 
     {
@@ -52,7 +50,7 @@ public class SplayBST {
         } 
     } 
 
-    public boolean contains(String key) {
+    public boolean contains(Key key) {
         return get(key) != null;
     }
 
@@ -60,35 +58,30 @@ public class SplayBST {
     // if no such value, return null
     
     
-    public String get(String key) {
-        String not="not found";
+    public Value get(Key key) {
         root = splay(root, key);
-        int num= stringCompare(root.key, key);
-        if (num==0){
-            return root.value;
-        } else{
-            return  not;
-        }
+        int cmp = key.compareTo(root.asociacion.key);
+        if (cmp == 0) return root.asociacion.value;
+        else return null;
     } 
    
 
    /***************************************************************************
     *  Splay tree insertion.
     ***************************************************************************/
-    public void put( Association <String,String> association) {
-        // splay key to root
-        if (root == null) {
-            root = new Node(association.getKey(), association.getValue());
+    public void put( Key key, Value value) {
+       if (root == null) {
+            root = new Node(key, value);
             return;
         }
         
-        root = splay(root, association.getKey());
-        
-        int num=stringCompare(root.key, association.getKey());
+        root = splay(root, key);
+
+        int cmp = key.compareTo(root.asociacion.key);
         
         // Insert new node at root
-        if (num < 0) {
-            Node n = new Node(association.getKey(), association.getValue());
+        if (cmp < 0) {
+            Node n = new Node(key, value);
             n.left = root.left;
             n.right = root;
             root.left = null;
@@ -96,8 +89,8 @@ public class SplayBST {
         }
 
         // Insert new node at root
-        else if (num > 0) {
-            Node n = new Node(association.getKey(), association.getValue());
+        else if (cmp > 0) {
+            Node n = new Node(key, value);
             n.right = root.right;
             n.left = root;
             root.right = null;
@@ -106,44 +99,24 @@ public class SplayBST {
 
         // It was a duplicate key. Simply replace the value
         else {
-            root.value = association.getValue();
-        }
-
-    }
-    
- 
-    public void remove(String key) {
-        if (root == null) return; // empty tree
-        
-        root = splay(root, key);
-
-        int num=stringCompare(root.key, key);
-        if (num == 0) {
-            if (root.left == null) {
-                root = root.right;
-            } 
-            else {
-                Node x = root.right;
-                root = root.left;
-                splay(root, key);
-                root.right = x;
-            }
+            root.asociacion.value = value;
+}
         }
 
         // else: it wasn't in the tree to remove
-    }
-    
    
-    private Node splay(Node h, String key) {
+    
+   private Node splay(Node h, Key key) {
         if (h == null) return null;
 
-        int cmp1=stringCompare(h.key, key);
+        int cmp1 = key.compareTo(h.asociacion.key);
+
         if (cmp1 < 0) {
             // key not in tree, so we're done
             if (h.left == null) {
                 return h;
             }
-            int cmp2 = key.compareTo(h.left.key);
+            int cmp2 = key.compareTo(h.left.asociacion.key);
             if (cmp2 < 0) {
                 h.left.left = splay(h.left.left, key);
                 h = rotateRight(h);
@@ -164,7 +137,7 @@ public class SplayBST {
                 return h;
             }
 
-            int cmp2=stringCompare(h.right.key, key);
+            int cmp2 = key.compareTo(h.right.asociacion.key);
             if (cmp2 < 0) {
                 h.right.left  = splay(h.right.left, key);
                 if (h.right.left != null)
@@ -180,20 +153,19 @@ public class SplayBST {
         }
 
         else return h;
-    }
+}
 
 
     public int height() { return height(root); }
     private int height(Node x) {
         if (x == null) return -1;
         return 1 + Math.max(height(x.left), height(x.right));
-    }
+}
 
     
-    public int size() {
+   public int size() {
         return size(root);
-    }
-    
+}
     private int size(Node x) {
         if (x == null) return 0;
         else return 1 + size(x.left) + size(x.right);
@@ -213,8 +185,7 @@ public class SplayBST {
         h.right = x.left;
         x.left = h;
         return x;
-    }
-    
+}
     
 
     

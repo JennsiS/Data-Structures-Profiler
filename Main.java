@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -20,49 +21,48 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        // TODO code application logic here
-        
-       //Ingreso de palabras al diccionario
        
          try{
                 String dicc= null;
                 String ingles= null;
                 String espa= null;
-                String s2="";
-                //Se crea un nuevo arbol binario
-                SplayBST arbol= new SplayBST();
+                SplayBST<String,String> arbolsplay = null; 
+                RedBlackTree<String,String> arbolRB = null; 
+                Scanner scanner = new Scanner(System.in);
                 //Lectura de las palabras encontradas en el archivo diccionario
                 FileReader fileReader = new FileReader("C:\\Users\\bff_n_000\\Desktop\\diccionary.dic");
                 BufferedReader doc = new BufferedReader(fileReader);
                 StringBuilder separador = new StringBuilder();
                 Association asociacion= new Association();
-                /*
-                while((dicc = doc.readLine()) != null) {
-                    //Se crea una asociacion por cada par de palabras encontradas
-                    
-                    //Se obtiene la palabra en ingles
-                    StringTokenizer st = new StringTokenizer (dicc);
-                    while (st.hasMoreTokens()){
-                          s2 = st.nextToken();
-                         numTokens= numTokens+1;
-                            if (numTokens==1){
-                                ingles=s2;
-                                System.out.println (ingles);
-                            } else if(numTokens==2){
-                                espa=s2;
-                                System.out.println (espa);
-                            }
-                           asociacion.put(ingles,espa);
-                           arbol.put(asociacion);
-                          
-                           }  
-              }
-     */
-                     while((dicc = doc.readLine())!= null){
+                int elegido=0;
+                System.out.println("Elegir la forma en la que desea de guardar el diccionario");
+                System.out.println("1.Splay Tree 2.Red Black Tree");
+                int op = scanner.nextInt();
+                scanner.nextLine();
+                switch (op) {   //Factory para crear un arbol Splay Tree o Red Black Tree
+                    case 1:
+                        {
+                            arbolsplay = new SplayBST<>();
+                            elegido = 1;
+                            break;
+                        }
+                    case 2:
+                        {
+                            arbolRB = new RedBlackTree<>();
+                            elegido = 2;
+                            break;
+                        }
+                    default:
+                        System.out.println("Ha ingresado una opcion que no es valida");
+                        break;
+                }
+                
+              
+               while((dicc = doc.readLine())!= null){
                separador.append(dicc);
                separador.append(System.lineSeparator());
                dicc += " ";
-                String valor = "";
+               String valor = "";
                for(int i=1;i<dicc.length();i++){
                    String temp = dicc.substring((i-1),i);  //Para verificar cada caracter de la linea
                    if(temp.equals("\t")){
@@ -76,15 +76,15 @@ public class Main {
                            }else{
                                valor = espa;
                            }
-                           asociacion.put(ingles,espa);
-                           arbol.put(asociacion);
+                           if(elegido==1){
+                            arbolsplay.put(ingles, espa);
+                           }else{
+                            arbolRB.put(ingles, espa);
+                           }
                        }
-                       
-                             
-                   }
-               }
-                     
-}
+                    }
+               }                
+        }
                 
               doc.close();
          
@@ -99,8 +99,8 @@ public class Main {
             while ((st = br.readLine()) != null){
                String1 = st.replaceFirst("\\(", "");
                String2 = String1.replace(")","");
-                String3 = String2.replace(" ","");
-                String [] twoParts = String3.split(",");
+               String3 = String2.replace(" ","");
+               String [] twoParts = String3.split(",");
                
             }
 
@@ -111,7 +111,8 @@ public class Main {
 
         }
      
-        System.out.println (arbol.size());
+       // System.out.println (arbolsplay.size());
+       //System.out.println (arbolRB.size());
         String[] wordsToTranslate = getWords();
         
         if (wordsToTranslate.length == 0){
@@ -121,14 +122,14 @@ public class Main {
             StringBuilder finalS = new StringBuilder();
             
             for (String i : wordsToTranslate){
-                if (arbol.get(i).equals("not found")){
+                if (arbolRB.get(i)==(null)){
                     finalS.append("*");
                     finalS.append(i);
                     finalS.append("*");
                     finalS.append(" ");
 
                 }else {
-                    finalS.append(arbol.get(i));
+                    finalS.append(arbolRB.get(i));
                     finalS.append(" ");
                 }
             }
@@ -153,7 +154,6 @@ public class Main {
         String[] words = new String[0];
         try{
             BufferedReader br = new BufferedReader(new FileReader(fileTranslate));
-
             String st;
             while ((st = br.readLine()) != null){
                 
