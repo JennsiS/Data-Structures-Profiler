@@ -1,20 +1,18 @@
 
+import java.util.NoSuchElementException;
+
+
 /**
  * @author Jennifer Sandoval,Andrea Paniagua
- * @param <K>
- * @param <V>
- * @Carne 18962,18731
+ * @param <Key>
+ * @param <Value>
+ * @Carne 18962,18733
  * @date 16/04/19
  * @name RedBlackTree.java
- * <p></p>
+ * <p>Implementacion de redblack tree</p>
  * Fuentes utilizadas:
  * Siddiqi, Z. (2012). A Red Black Tree Implementation in Java . Extraido de:https://github.com/Arsenalist/Red-Black-Tree-Java-Implementation
  * */
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
-
-// Class Definitions
 public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<Value>> {
   private static final boolean RED   = true;
     private static final boolean BLACK = false;
@@ -36,7 +34,7 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
     }
 
     /**
-     * Initializes an empty symbol table.
+     * Inicializacion de la clase
      */
     public RedBlackTree() {
     }
@@ -44,13 +42,13 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
    /***************************************************************************
     *  Node helper methods.
     ***************************************************************************/
-    // is node x red; false if x is null ?
+    // si el nodo x es rojo de vuelve true, si es null devuelve false 
     private boolean isRed(Node x) {
         if (x == null) return false;
         return x.color == RED;
     }
 
-    // number of node in subtree rooted at x; 0 if x is null
+    // Numero de nodos en un subarbol 
     private int size(Node x) {
         if (x == null) return 0;
         return x.size;
@@ -58,31 +56,23 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
 
 
     /**
-     * Returns the number of key-value pairs in this symbol table.
-     * @return the number of key-value pairs in this symbol table
+     * @return el numero de key-value parejas  
      */
     public int size() {
         return size(root);
     }
 
    /**
-     * Is this symbol table empty?
-     * @return {@code true} if this symbol table is empty and {@code false} otherwise
+     * @return devuelve true si esta vacio y false si no
      */
     public boolean isEmpty() {
         return root == null;
     }
-
-
-   /***************************************************************************
-    *  Standard BST search.
-    ***************************************************************************/
-
+    
     /**
      * Returns the value associated with the given key.
      * @param key the key
-     * @return the value associated with the given key if the key is in the symbol table
-     *     and {@code null} if the key is not in the symbol table
+     * @return El valor asociado con la llave
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public Value get(Key key) {
@@ -93,19 +83,17 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
     // value associated with the given key in subtree rooted at x; null if no such key
     private Value get(Node x, Key key) {
         while (x != null) {
-            int cmp = key.compareTo(x.asociacion.getKey());
+            int cmp = key.compareTo(x.asociacion.key);
             if      (cmp < 0) x = x.left;
             else if (cmp > 0) x = x.right;
-            else              return x.asociacion.getValue();
+            else              return x.asociacion.value;
         }
         return null;
     }
 
     /**
-     * Does this symbol table contain the given key?
      * @param key the key
-     * @return {@code true} if this symbol table contains {@code key} and
-     *     {@code false} otherwise
+     * @return True cuando contiene la llave 
      * @throws IllegalArgumentException if {@code key} is {@code null}
      */
     public boolean contains(Key key) {
@@ -117,11 +105,7 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
     ***************************************************************************/
 
     /**
-     * Inserts the specified key-value pair into the symbol table, overwriting the old 
-     * value with the new value if the symbol table already contains the specified key.
-     * Deletes the specified key (and its associated value) from this symbol table
-     * if the specified value is {@code null}.
-     *
+  
      * @param key the key
      * @param val the value
      * @throws IllegalArgumentException if {@code key} is {@code null}
@@ -142,10 +126,10 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
     private Node put(Node h, Key key, Value val) { 
         if (h == null) return new Node(key, val, RED, 1);
 
-        int cmp = key.compareTo(h.asociacion.getKey());
+        int cmp = key.compareTo(h.asociacion.key);
         if      (cmp < 0) h.left  = put(h.left,  key, val); 
         else if (cmp > 0) h.right = put(h.right, key, val); 
-        else           val=  h.asociacion.getValue();
+        else              h.asociacion.value   = val;
 
         // fix-up any right-leaning links
         if (isRed(h.right) && !isRed(h.left))      h = rotateLeft(h);
@@ -245,7 +229,7 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
     private Node delete(Node h, Key key) { 
         // assert get(h, key) != null;
 
-        if (key.compareTo(h.asociacion.getKey()) < 0)  {
+        if (key.compareTo(h.asociacion.key) < 0)  {
             if (!isRed(h.left) && !isRed(h.left.left))
                 h = moveRedLeft(h);
             h.left = delete(h.left, key);
@@ -253,18 +237,14 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
         else {
             if (isRed(h.left))
                 h = rotateRight(h);
-            if (key.compareTo(h.asociacion.getKey()) == 0 && (h.right == null))
+            if (key.compareTo(h.asociacion.key) == 0 && (h.right == null))
                 return null;
             if (!isRed(h.right) && !isRed(h.right.left))
                 h = moveRedRight(h);
-            if (key.compareTo(h.asociacion.getKey()) == 0) {
+            if (key.compareTo(h.asociacion.key) == 0) {
                 Node x = min(h.right);
-                Key n1= h.asociacion.getKey();
-                Key n2= x.asociacion.getKey();
-                n1=n2;
-                Value nh= h.asociacion.getValue();
-                Value nx=x.asociacion.getValue();
-                nh=nx; 
+                h.asociacion.key = x.asociacion.key;
+                h.asociacion.value = x.asociacion.value;
                 // h.val = get(h.right, min(h.right).key);
                 // h.key = min(h.right).key;
                 h.right = deleteMin(h.right);
@@ -383,7 +363,7 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
      */
     public Key min() {
         if (isEmpty()) throw new NoSuchElementException("calls min() with empty symbol table");
-        return min(root).asociacion.getKey();
+        return min(root).asociacion.key;
     } 
 
     // the smallest key in subtree rooted at x; null if no such key
@@ -400,7 +380,7 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
      */
     public Key max() {
         if (isEmpty()) throw new NoSuchElementException("calls max() with empty symbol table");
-        return max(root).asociacion.getKey();
+        return max(root).asociacion.key;
     } 
 
     // the largest key in the subtree rooted at x; null if no such key
@@ -423,13 +403,13 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
         if (isEmpty()) throw new NoSuchElementException("calls floor() with empty symbol table");
         Node x = floor(root, key);
         if (x == null) return null;
-        else           return x.asociacion.getKey();
+        else           return x.asociacion.key;
     }    
 
     // the largest key in the subtree rooted at x less than or equal to the given key
     private Node floor(Node x, Key key) {
         if (x == null) return null;
-        int cmp = key.compareTo(x.asociacion.getKey());
+        int cmp = key.compareTo(x.asociacion.key);
         if (cmp == 0) return x;
         if (cmp < 0)  return floor(x.left, key);
         Node t = floor(x.right, key);
@@ -449,13 +429,13 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
         if (isEmpty()) throw new NoSuchElementException("calls ceiling() with empty symbol table");
         Node x = ceiling(root, key);
         if (x == null) return null;
-        else           return x.asociacion.getKey();
+        else           return x.asociacion.key;  
     }
 
     // the smallest key in the subtree rooted at x greater than or equal to the given key
     private Node ceiling(Node x, Key key) {  
         if (x == null) return null;
-        int cmp = key.compareTo(x.asociacion.getKey());
+        int cmp = key.compareTo(x.asociacion.key);
         if (cmp == 0) return x;
         if (cmp > 0)  return ceiling(x.right, key);
         Node t = ceiling(x.left, key);
@@ -477,7 +457,7 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
             throw new IllegalArgumentException("argument to select() is invalid: " + k);
         }
         Node x = select(root, k);
-        return x.asociacion.getKey();
+        return x.asociacion.key;
     }
 
     // the key of rank k in the subtree rooted at x
@@ -504,27 +484,17 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
     // number of keys less than key in the subtree rooted at x
     private int rank(Key key, Node x) {
         if (x == null) return 0; 
-        int cmp = key.compareTo(x.asociacion.getKey()); 
+        int cmp = key.compareTo(x.asociacion.key); 
         if      (cmp < 0) return rank(key, x.left); 
         else if (cmp > 0) return 1 + size(x.left) + rank(key, x.right); 
         else              return size(x.left); 
     } 
 
-   /***************************************************************************
-    *  Range count and range search.
-    ***************************************************************************/
-
-  
-  
     /**
-     * Returns the number of keys in the symbol table in the given range.
      *
-     * @param  lo minimum endpoint
-     * @param  hi maximum endpoint
-     * @return the number of keys in the sybol table between {@code lo} 
-     *    (inclusive) and {@code hi} (inclusive)
-     * @throws IllegalArgumentException if either {@code lo} or {@code hi}
-     *    is {@code null}
+     * @param lo Key minima
+     * @param hi Key maxima
+     * @return devuelve un valor de tipo int con el tamaño del arbol
      */
     public int size(Key lo, Key hi) {
         if (lo == null) throw new IllegalArgumentException("first argument to size() is null");
@@ -534,7 +504,6 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
         if (contains(hi)) return rank(hi) - rank(lo) + 1;
         else              return rank(hi) - rank(lo);
     }
-
 
 
     // does this binary tree satisfy symmetric order?
@@ -548,9 +517,9 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
     // Credit: Bob Dondero's elegant solution
     private boolean isBST(Node x, Key min, Key max) {
         if (x == null) return true;
-        if (min != null && x.asociacion.getKey().compareTo(min) <= 0) return false;
-        if (max != null && x.asociacion.getKey().compareTo(max) >= 0) return false;
-        return isBST(x.left, min, x.asociacion.getKey()) && isBST(x.right, x.asociacion.getKey(), max);
+        if (min != null && x.asociacion.key.compareTo(min) <= 0) return false;
+        if (max != null && x.asociacion.key.compareTo(max) >= 0) return false;
+        return isBST(x.left, min, x.asociacion.key) && isBST(x.right, x.asociacion.key, max);
     } 
 
     // are the size fields correct?
@@ -600,35 +569,5 @@ public class RedBlackTree<Key extends Comparable<Key>,Value extends Comparable<V
         if (!isRed(x)) black--;
         return isBalanced(x.left, black) && isBalanced(x.right, black);
     } 
-    
-     
- 
-    
-     public static int stringCompare(String str1, String str2) 
-    {
-        int l1 = str1.length();
-        int l2 = str2.length(); 
-        int lmin = Math.min(l1, l2); 
-  
-        for (int i = 0; i < lmin; i++) { 
-            int str1_ch = (int)str1.charAt(i); 
-            int str2_ch = (int)str2.charAt(i); 
-  
-            if (str1_ch != str2_ch) { 
-                return str1_ch - str2_ch; 
-            } 
-        } 
-  
-         
-        if (l1 != l2) { 
-            return l1 - l2; 
-        } 
-  
-        // If none of the above conditions is true, 
-        // it implies both the strings are equal 
-        else { 
-            return 0; 
-        } 
-    }
 
-}// end class RedBlackTree
+}

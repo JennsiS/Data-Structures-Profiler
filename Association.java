@@ -3,7 +3,7 @@ import java.util.*;
  * @author Jennifer Sandoval,Andrea Paniagua
  * @param <K>
  * @param <V>
- * @Carne 18962,18731
+ * @Carne 18962,18733
  * @date 16/04/19
  * @name Association.java
  * <p>Clase que permite la asociacion de palabras por medio de HashMaps</p>
@@ -11,8 +11,8 @@ import java.util.*;
 
 public class Association<K,V> implements Map.Entry<K,V> {
 
-    private K key; 
-    private V value;
+    K key; 
+    V value;
     private HashMap<K,V> association;
 
     /**
