@@ -21,142 +21,144 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
-       
-         try{
-                String dicc= null;
-                String ingles= null;
-                String espa= null;
-                SplayBST<String,String> arbolsplay = null; 
-                RedBlackTree<String,String> arbolRB = null; 
-                Scanner scanner = new Scanner(System.in);
-                //Lectura de las palabras encontradas en el archivo diccionario
-                FileReader fileReader = new FileReader("C:\\Users\\bff_n_000\\Desktop\\diccionary.dic");
-                BufferedReader doc = new BufferedReader(fileReader);
-                StringBuilder separador = new StringBuilder();
-                Association asociacion= new Association();
-                int elegido=0;
-                System.out.println("Elegir la forma en la que desea de guardar el diccionario");
-                System.out.println("1.Splay Tree 2.Red Black Tree");
-                int op = scanner.nextInt();
-                scanner.nextLine();
-                switch (op) {   //Factory para crear un arbol Splay Tree o Red Black Tree
-                    case 1:
-                        {
-                            arbolsplay = new SplayBST<>();
-                            elegido = 1;
-                            break;
-                        }
-                    case 2:
-                        {
-                            arbolRB = new RedBlackTree<>();
-                            elegido = 2;
-                            break;
-                        }
-                    default:
-                        System.out.println("Ha ingresado una opcion que no es valida");
-                        break;
-                }
-                
-              
-               while((dicc = doc.readLine())!= null){
-               separador.append(dicc);
-               separador.append(System.lineSeparator());
-               dicc += " ";
-               String valor = "";
-               for(int i=1;i<dicc.length();i++){
-                   String temp = dicc.substring((i-1),i);  //Para verificar cada caracter de la linea
-                   if(temp.equals("\t")){
-                       ingles = dicc.substring(0,i-1).toUpperCase(); //Se obtiene la palabra en ingles
-                       espa = dicc.substring(i,dicc.length()).toUpperCase();
-                       for(int j=1;j<espa.length();j++){
-                           String temp2 = espa.substring((j-1),j);
-                           if(temp2.equals(" ")||temp2.equals(";")){
-                               valor = espa.substring(0,j-1).toUpperCase();
-                               break;
-                           }else{
-                               valor = espa;
-                           }
-                           if(elegido==1){
-                            arbolsplay.put(ingles, espa);
-                           }else{
-                            arbolRB.put(ingles, espa);
-                           }
-                       }
-                    }
-               }                
-        }
-                
-              doc.close();
-         
-        File traduccion = new File("C:\\Users\\bff_n_000\\Desktop\\traduccion.text");
-        String String1 = "";
-        String String2 = "";
-        String String3 = "";
+
         try{
-            BufferedReader br = new BufferedReader(new FileReader(traduccion));
-
-            String st;
-            while ((st = br.readLine()) != null){
-               String1 = st.replaceFirst("\\(", "");
-               String2 = String1.replace(")","");
-               String3 = String2.replace(" ","");
-               String [] twoParts = String3.split(",");
-               
+            String dicc= null;
+            String ingles= null;
+            String espa= null;
+            SplayBST<String,String> arbolsplay = null;
+            RedBlackTree<String,String> arbolRB = null;
+            Scanner scanner = new Scanner(System.in);
+            //Lectura de las palabras encontradas en el archivo diccionario
+            //FileReader fileReader = new FileReader("C:\\Users\\bff_n_000\\Desktop\\diccionary.dic");
+            FileReader fileReader = new FileReader("C:\\Users\\wuser\\Desktop\\Tutorias Java\\Diccionario2\\src\\diccionario2\\diccionary.txt");
+            BufferedReader doc = new BufferedReader(fileReader);
+            StringBuilder separador = new StringBuilder();
+            Association asociacion= new Association();
+            int elegido=0;
+            System.out.println("Elegir la forma en la que desea de guardar el diccionario");
+            System.out.println("1.Splay Tree 2.Red Black Tree");
+            int op = scanner.nextInt();
+            scanner.nextLine();
+            switch (op) {   //Factory para crear un arbol Splay Tree o Red Black Tree
+                case 1:
+                {
+                    arbolsplay = new SplayBST<>();
+                    elegido = 1;
+                    break;
+                }
+                case 2:
+                {
+                    arbolRB = new RedBlackTree<>();
+                    elegido = 2;
+                    break;
+                }
+                default:
+                    System.out.println("Ha ingresado una opcion que no es valida");
+                    break;
             }
 
-        }catch (FileNotFoundException e){
-            //System.out.println("Archivo no encontrado");
 
-        }catch (IOException e){
-
-        }
-     
-       // System.out.println (arbolsplay.size());
-       //System.out.println (arbolRB.size());
-        String[] wordsToTranslate = getWords();
-        
-        if (wordsToTranslate.length == 0){
-            System.out.println("Intentar nuevamente");
-        }
-        else {
-            StringBuilder finalS = new StringBuilder();
-            
-            for (String i : wordsToTranslate){
-                if (arbolRB.get(i)==(null)){
-                    finalS.append("*");
-                    finalS.append(i);
-                    finalS.append("*");
-                    finalS.append(" ");
-
-                }else {
-                    finalS.append(arbolRB.get(i));
-                    finalS.append(" ");
+            while((dicc = doc.readLine())!= null){
+                separador.append(dicc);
+                separador.append(System.lineSeparator());
+                dicc += " ";
+                String valor = "";
+                for(int i=1;i<dicc.length();i++){
+                    String temp = dicc.substring((i-1),i);  //Para verificar cada caracter de la linea
+                    if(temp.equals("\t")){
+                        ingles = dicc.substring(0,i-1).toLowerCase(); //Se obtiene la palabra en ingles
+                        espa = dicc.substring(i,dicc.length()).toLowerCase();
+                        for(int j=1;j<espa.length();j++){
+                            String temp2 = espa.substring((j-1),j);
+                            if(temp2.equals(" ")||temp2.equals(";")){
+                                valor = espa.substring(0,j-1).toLowerCase();
+                                break;
+                            }else{
+                                valor = espa;
+                            }
+                            if(elegido==1){
+                                arbolsplay.put(ingles, espa);
+                            }else{
+                                arbolRB.put(ingles, espa);
+                            }
+                        }
+                    }
                 }
             }
-            finalS.append(".");
-             System.out.println("-------------------------------------------------------------");
-            System.out.println("Traducción:");
-            System.out.println(finalS);
+
+            doc.close();
+
+            //File traduccion = new File("C:\\Users\\bff_n_000\\Desktop\\traduccion.text");
+            File traduccion = new File("C:\\Users\\wuser\\Desktop\\Tutorias Java\\Diccionario2\\src\\diccionario2\\traduccion.txt");
+            String String1 = "";
+            String String2 = "";
+            String String3 = "";
+            try{
+                BufferedReader br = new BufferedReader(new FileReader(traduccion));
+
+                String st;
+                while ((st = br.readLine()) != null){
+                    String1 = st.replaceFirst("\\(", "");
+                    String2 = String1.replace(")","");
+                    String3 = String2.replace(" ","");
+                    String [] twoParts = String3.split(",");
+
+                }
+
+            }catch (FileNotFoundException e){
+                //System.out.println("Archivo no encontrado");
+
+            }catch (IOException e){
+
+            }
+
+            //System.out.println (arbolsplay.size());
+            System.out.println (arbolRB.size());
+            String[] wordsToTranslate = getWords();
+
+            if (wordsToTranslate.length == 0){
+                System.out.println("Intentar nuevamente");
+            }
+            else {
+                StringBuilder finalS = new StringBuilder();
+
+                for (String i : wordsToTranslate){
+                    if (arbolRB.get(i)==(null)){
+                        finalS.append("*");
+                        finalS.append(i);
+                        finalS.append("*");
+                        finalS.append(" ");
+
+                    }else {
+                        finalS.append(arbolRB.get(i));
+                        finalS.append(" ");
+                    }
+                }
+                finalS.append(".");
+                System.out.println("-------------------------------------------------------------");
+                System.out.println("Traducción:");
+                System.out.println(finalS);
+            }
+            System.out.println(arbolRB.get("zucchini"));
         }
-           
+        catch(FileNotFoundException ex) {
+            System.out.println("No es posible abrir" + "diccionario.txt" + "'");
         }
-            catch(FileNotFoundException ex) {
-                System.out.println("No es posible abrir" + "diccionario.txt" + "'");                
-            } 
-        
-         
-    
+
+
+
     }
-    
-     public static String[] getWords(){
-        File fileTranslate = new File("C:\\Users\\bff_n_000\\Desktop\\traduccion.txt");
+
+    public static String[] getWords(){
+        File fileTranslate = new File("C:\\Users\\wuser\\Desktop\\Tutorias Java\\Diccionario2\\src\\diccionario2\\traduccion.txt");
 
         String[] words = new String[0];
         try{
             BufferedReader br = new BufferedReader(new FileReader(fileTranslate));
             String st;
             while ((st = br.readLine()) != null){
-                
+
                 words = st.replaceAll("[^a-zA-Z ]", "").toLowerCase().split("\\s+");
                 return words;
             }
@@ -170,32 +172,5 @@ public class Main {
         }
         return words;
     }
-}   
-  
-    
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-         
-                
-    
 
-                
+}
